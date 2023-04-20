@@ -1,0 +1,5 @@
+{
+  "/(figuras)/2d/reta/page": "app/(figuras)/2d/reta/page.js",
+  "/(figuras)/pixel/page": "app/(figuras)/pixel/page.js",
+  "/page": "app/page.js"
+}
