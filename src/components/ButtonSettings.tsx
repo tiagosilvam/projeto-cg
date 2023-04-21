@@ -2,7 +2,7 @@
 
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';
 
-export const ButtonSettings = () => {
+const ButtonSettings = () => {
   const background = [
     '#000000',
     '#FFFFFF',
@@ -82,3 +82,5 @@ export const ButtonSettings = () => {
     </div>
   );
 };
+
+export default ButtonSettings

@@ -23,7 +23,7 @@ const createUserSchema = z.object({
 
 type CreateUserData = z.infer<typeof createUserSchema>;
 
-export default function Test() {
+function Test() {
   const createUserForm = useForm<CreateUserData>({
     resolver: zodResolver(createUserSchema)
   });
@@ -101,3 +101,5 @@ export default function Test() {
     </main>
   );
 }
+
+export default Test

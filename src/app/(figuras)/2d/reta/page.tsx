@@ -37,7 +37,7 @@ const PositionFormSchema = z.object({
 
 type PositionFormData = z.infer<typeof PositionFormSchema>;
 
-export default function Reta() {
+function Reta() {
   const canvasContext = useContext(CanvasGlobalContext);
   const [value, setValue] = useState('DDA');
   const { enqueueSnackbar } = useSnackbar();
@@ -177,3 +177,5 @@ export default function Reta() {
     </div>
   );
 }
+
+export default Reta

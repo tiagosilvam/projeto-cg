@@ -1,4 +1,4 @@
-import { ButtonSettings } from '@/components/ButtonSettings';
+import ButtonSettings from '@/components/ButtonSettings';
 
 import Link from 'next/link';
 

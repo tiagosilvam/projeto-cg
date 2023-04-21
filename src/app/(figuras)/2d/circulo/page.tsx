@@ -23,7 +23,7 @@ const PositionFormSchema = z.object({
 
 type PositionFormData = z.infer<typeof PositionFormSchema>;
 
-export default function Circulo() {
+function Circulo() {
   const canvasContext = useContext(CanvasGlobalContext);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -82,3 +82,5 @@ export default function Circulo() {
     </div>
   );
 }
+
+export default Circulo

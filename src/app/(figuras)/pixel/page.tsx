@@ -27,7 +27,7 @@ const PositionFormSchema = z.object({
 
 type PositionFormData = z.infer<typeof PositionFormSchema>;
 
-export default function Pixel() {
+function Pixel() {
   const canvasContext = useContext(CanvasGlobalContext);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -122,3 +122,5 @@ export default function Pixel() {
     </>
   );
 }
+
+export default Pixel
