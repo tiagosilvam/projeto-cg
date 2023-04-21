@@ -7,7 +7,7 @@ import { Canvas } from '@/components/Canvas';
 
 import CanvasGlobalContextProvider from '@/contexts/canvas';
 
-function FigurasLayout({
+export default function FigurasLayout({
   children
 }: {
   children: React.ReactNode;
@@ -37,5 +37,3 @@ function FigurasLayout({
     </div>
   );
 }
-
-export default FigurasLayout
