@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import AlertProvider from '@/components/Alert/Alert';
 import { Canvas } from '@/components/Canvas';
@@ -17,8 +17,7 @@ export default function FigurasLayout({
     useState<CanvasRenderingContext2D | null>();
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext('2d');
+    const context = canvasRef.current?.getContext('2d');
     setCanvasContext(context);
   }, [canvasRef]);
 

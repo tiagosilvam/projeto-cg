@@ -123,4 +123,4 @@ function Pixel() {
   );
 }
 
-export default Pixel
+export default Pixel;

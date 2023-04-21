@@ -178,4 +178,4 @@ function Reta() {
   );
 }
 
-export default Reta
+export default Reta;

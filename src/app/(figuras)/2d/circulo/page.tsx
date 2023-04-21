@@ -83,4 +83,4 @@ function Circulo() {
   );
 }
 
-export default Circulo
+export default Circulo;

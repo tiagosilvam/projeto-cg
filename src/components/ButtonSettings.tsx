@@ -83,4 +83,4 @@ const ButtonSettings = () => {
   );
 };
 
-export default ButtonSettings
+export default ButtonSettings;
