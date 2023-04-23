@@ -43,7 +43,7 @@ const ButtonSettings = () => {
   ];
 
   return (
-    <div className="group text-white hover:text-blue-500">
+    <div className="group text-white hover:text-blue-500 cursor-pointer">
       <div className="flex items-center">
         <Cog6ToothIcon className="w-6 h-6 group-hover:-rotate-90" />
         <span className="text-xs ml-1">Configurações</span>

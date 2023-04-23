@@ -2,7 +2,7 @@ import { createContext, useState } from 'react';
 
 import * as CanvasFunctions from '@/functions/canvas';
 
-type ContextProps = {
+type Context = {
   drawPixel: (x: number, y: number) => Promise<void>;
   desenharReta: (
     x: number,
@@ -16,9 +16,10 @@ type ContextProps = {
   inp_to_ndc: ([x, y]: [x: number, y: number]) => number[];
   user_to_ndc: (x: number, y: number) => number[];
   ndc_to_dc: (x: number, y: number) => number[];
+  cube: () => Promise<void>;
 };
 
-export const CanvasGlobalContext = createContext<ContextProps | null>(null);
+export const CanvasGlobalContext = createContext<Context | null>(null);
 
 export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
   const [grid, setGrid] = useState(false);
@@ -105,6 +106,14 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
     return CanvasFunctions.ndc_to_dc(x, y);
   }
 
+  function cube() {
+    return new Promise<void>((resolve, reject) => {
+      getCanvas()
+        .then((ctx) => resolve(CanvasFunctions.desenharCubo(ctx)))
+        .catch((e) => reject(e));
+    });
+  }
+
   return (
     <CanvasGlobalContext.Provider
       value={{
@@ -114,7 +123,8 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         desenharCirculo,
         inp_to_ndc,
         user_to_ndc,
-        ndc_to_dc
+        ndc_to_dc,
+        cube
       }}
     >
       {children}

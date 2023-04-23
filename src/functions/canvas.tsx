@@ -264,3 +264,130 @@ export function user_to_ndc(userX: number, userY: number) {
 
   return [ndcX, ndcY];
 }
+
+export function desenharCubo(ctx: CanvasRenderingContext2D) {
+  // Configurações do cubo
+  const cubeSize = 50;
+  const cubeVertices = [
+    [-cubeSize, -cubeSize, -cubeSize],
+    [cubeSize, -cubeSize, -cubeSize],
+    [cubeSize, cubeSize, -cubeSize],
+    [-cubeSize, cubeSize, -cubeSize],
+    [-cubeSize, -cubeSize, cubeSize],
+    [cubeSize, -cubeSize, cubeSize],
+    [cubeSize, cubeSize, cubeSize],
+    [-cubeSize, cubeSize, cubeSize]
+  ];
+  const cubeEdges = [
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [3, 0],
+    [4, 5],
+    [5, 6],
+    [6, 7],
+    [7, 4],
+    [0, 4],
+    [1, 5],
+    [2, 6],
+    [3, 7]
+  ];
+
+  // Função de projeção
+  function project(vertex: number[]) {
+    const x = vertex[0];
+    const y = vertex[1];
+    const z = vertex[2];
+    const factor = 500 / (500 + z);
+    const projectedX = x * factor + 800 / 2;
+    const projectedY = y * factor + 600 / 2;
+    return [projectedX, projectedY];
+  }
+
+  // Função de desenho do cubo
+  function drawCube() {
+    // original
+    // Limpar o Canvas
+    ctx.clearRect(0, 0, 800, 600);
+
+    // Desenhar as arestas do cubo
+    ctx.beginPath();
+    for (let i = 0; i < cubeEdges.length; i++) {
+      const vertex1 = cubeVertices[cubeEdges[i][0]];
+      const vertex2 = cubeVertices[cubeEdges[i][1]];
+      const projectedVertex1 = project(vertex1);
+      const projectedVertex2 = project(vertex2);
+      ctx.moveTo(projectedVertex1[0], projectedVertex1[1]);
+      ctx.lineTo(projectedVertex2[0], projectedVertex2[1]);
+    }
+    ctx.strokeStyle = 'white';
+    ctx.stroke();
+  }
+  // Animação do cubo
+  function rotateX() {
+    // Atualizar a posição e orientação do cubo
+    const angleX = -0.05;
+
+    // Rotacionar os vértices do cubo em torno do eixo X
+    for (let i = 0; i < cubeVertices.length; i++) {
+      const vertex = cubeVertices[i];
+      const x = vertex[0];
+      const y = vertex[1];
+      const z = vertex[2];
+
+      // Rotação em torno do eixo Y
+      const newY = y * Math.cos(angleX) + z * Math.sin(angleX);
+      const newZ = z * Math.cos(angleX) - y * Math.sin(angleX);
+      vertex[0] = x;
+      vertex[1] = newY;
+      vertex[2] = newZ;
+    }
+    // Desenhar o cubo
+    drawCube();
+  }
+
+  function rotateY() {
+    // Atualizar a posição e orientação do cubo
+    const angleY = 0.05;
+
+    // Rotacionar os vértices do cubo em torno do eixo Y
+    for (let i = 0; i < cubeVertices.length; i++) {
+      const vertex = cubeVertices[i];
+      const x = vertex[0];
+      const y = vertex[1];
+      const z = vertex[2];
+
+      // Rotação em torno do eixo Y
+      const newX = x * Math.cos(angleY) - z * Math.sin(angleY);
+      const newZ = z * Math.cos(angleY) + x * Math.sin(angleY);
+      vertex[0] = newX;
+      vertex[1] = y;
+      vertex[2] = newZ;
+    }
+    // Desenhar o cubo
+    drawCube();
+  }
+
+  function rotateZ() {
+    // Atualizar a posição e orientação do cubo
+    const angleZ = 0.05;
+
+    // Rotacionar os vértices do cubo em torno do eixo Z
+    for (let i = 0; i < cubeVertices.length; i++) {
+      const vertex = cubeVertices[i];
+      const x = vertex[0];
+      const y = vertex[1];
+      const z = vertex[2];
+
+      // Rotação em torno do eixo Z
+      const newX = x * Math.cos(angleZ) - y * Math.sin(angleZ);
+      const newY = y * Math.cos(angleZ) + x * Math.sin(angleZ);
+      vertex[0] = newX;
+      vertex[1] = newY;
+      vertex[2] = z;
+    }
+    // Desenhar o cubo
+    drawCube();
+  }
+  drawCube();
+}

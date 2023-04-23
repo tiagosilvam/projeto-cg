@@ -1,100 +1,44 @@
 'use client';
 
-import { useForm, FormProvider } from 'react-hook-form';
+import { useContext } from 'react';
 
-import { Form } from '@/components/Form';
+import { Button } from '@/components/Button';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { CanvasGlobalContext } from '@/contexts/Canvas';
 
-const createUserSchema = z.object({
-  posX: z.coerce
-    .number()
-    .min(-400, 'Valor mínimo: -400')
-    .max(400, 'Valor máximo: 400'),
-  posY: z.coerce
-    .number()
-    .min(-300, 'Valor mínimo: -300')
-    .max(300, 'Valor máximo: 300')
-});
+import { useSnackbar } from 'notistack';
 
-type CreateUserData = z.infer<typeof createUserSchema>;
+import { PaintBrushIcon } from '@heroicons/react/24/solid';
 
-function Test() {
-  const createUserForm = useForm<CreateUserData>({
-    resolver: zodResolver(createUserSchema)
-  });
+function Pixel() {
+  const canvasContext = useContext(CanvasGlobalContext);
+  const { enqueueSnackbar } = useSnackbar();
 
-  async function createUser(data: CreateUserData) {
-    console.log(data);
+  function handleClick() {
+    canvasContext
+      ?.cube()
+      .then(() => {
+        enqueueSnackbar('O cubo foi desenhado.', { variant: 'success' });
+      })
+      .catch((e) => {
+        enqueueSnackbar(`${e}`, { variant: 'error' });
+      });
   }
 
-  const {
-    handleSubmit,
-    formState: { isSubmitting }
-  } = createUserForm;
-
   return (
-    <main className="flex flex-row gap-6 items-center justify-center">
-      <FormProvider {...createUserForm}>
-        <form
-          onSubmit={handleSubmit(createUser)}
-          className="flex flex-col gap-4"
-        >
-          <div className="flex gap-4">
-            <Form.Field>
-              <Form.Input
-                type="number"
-                name="posX"
-                placeholder="posX"
-                required
-              />
-              <Form.ErrorMessage field="posX" />
-            </Form.Field>
-            <Form.Field>
-              <Form.Input
-                type="number"
-                name="posY"
-                placeholder="posY"
-                required
-              />
-              <Form.ErrorMessage field="posY" />
-            </Form.Field>
-          </div>
-          <div className="flex gap-4">
-            <Form.Field>
-              <Form.Input
-                type="number"
-                name="posX"
-                placeholder="posX2"
-                required
-              />
-              <Form.ErrorMessage field="posX" />
-            </Form.Field>
-            <Form.Field>
-              <Form.Input
-                type="number"
-                name="posY"
-                placeholder="posY2"
-                required
-              />
-              <Form.ErrorMessage field="posY" />
-            </Form.Field>
-          </div>
-          <div>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-violet-500 text-white rounded px-3 h-10 font-semibold text-sm hover:bg-violet-600"
-            >
-              Salvar
-            </button>
-          </div>
-        </form>
-        <button>DESENHSAR</button>
-      </FormProvider>
-    </main>
+    <div>
+      <span className="text-3xl mb-2">Desenhar Pixel</span>
+      <hr className="h-px bg-gray-100 border-0 mb-4 mt-2" />
+      <Button
+        name="Limpar"
+        type="button"
+        icon={<PaintBrushIcon className="w-6 h-6 mr-3" />}
+        color="bg-emerald-500"
+        hover="hover:bg-emerald-600"
+        onClick={handleClick}
+      />
+    </div>
   );
 }
 
-export default Test;
+export default Pixel;
