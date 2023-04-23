@@ -61,13 +61,18 @@ function Reta() {
         enqueueSnackbar(`A reta foi desenhada usando o algorítmo ${value}.`, {
           variant: 'success'
         })
+      )
+      .catch((error) =>
+        enqueueSnackbar(`${error}`, {
+          variant: 'error'
+        })
       );
   }
 
   return (
     <div className="">
       <span className="text-3xl mb-2">Desenhar Reta</span>
-      <hr className="h-px bg-gray-100 border-0 mb-4" />
+      <hr className="h-px bg-gray-100 border-0 mb-4 mt-2" />
       <div className="flex flex-row gap-3 mb-4">
         <RadioButton
           name="Radio"
@@ -137,7 +142,16 @@ function Reta() {
             color="bg-emerald-500"
             hover="hover:bg-emerald-600"
             onClick={() => {
-              canvasContext?.clearCanvas();
+              canvasContext
+                ?.clearCanvas()
+                .then(() =>
+                  enqueueSnackbar('O display foi limpo.', {
+                    variant: 'info'
+                  })
+                )
+                .catch((error) =>
+                  enqueueSnackbar(`${error}`, { variant: 'error' })
+                );
             }}
           />
         </div>

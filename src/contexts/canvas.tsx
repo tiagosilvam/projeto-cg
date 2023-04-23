@@ -12,7 +12,7 @@ type ContextProps = {
     type: string
   ) => Promise<number[][]>;
   desenharCirculo: (r: number) => Promise<number[][]>;
-  clearCanvas: () => void;
+  clearCanvas: () => Promise<void>;
   inp_to_ndc: ([x, y]: [x: number, y: number]) => number[];
   user_to_ndc: (x: number, y: number) => number[];
   ndc_to_dc: (x: number, y: number) => number[];
@@ -82,9 +82,13 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   function clearCanvas() {
-    getCanvas().then((ctx) => {
-      setGrid(false);
-      CanvasFunctions.clear(ctx);
+    return new Promise<void>((resolve, reject) => {
+      getCanvas()
+        .then((ctx) => {
+          setGrid(false);
+          resolve(CanvasFunctions.clear(ctx));
+        })
+        .catch((e) => reject(e));
     });
   }
 

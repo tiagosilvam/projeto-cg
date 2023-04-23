@@ -93,8 +93,16 @@ function Pixel() {
             color="bg-emerald-500"
             hover="hover:bg-emerald-600"
             onClick={() => {
-              canvasContext?.clearCanvas();
-              enqueueSnackbar('O display foi limpo.', { variant: 'info' });
+              canvasContext
+                ?.clearCanvas()
+                .then(() =>
+                  enqueueSnackbar('O display foi limpo.', {
+                    variant: 'info'
+                  })
+                )
+                .catch((error) =>
+                  enqueueSnackbar(`${error}`, { variant: 'error' })
+                );
             }}
           />
         </div>

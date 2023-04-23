@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/Button';
@@ -25,7 +25,7 @@ type PositionFormData = z.infer<typeof PositionFormSchema>;
 
 function Circulo() {
   const canvasContext = useContext(CanvasGlobalContext);
-  const [pontos, setPontos] = useState<number[][]>();
+  //const [pontos, setPontos] = useState<number[][]>();
   const { enqueueSnackbar } = useSnackbar();
 
   const {
@@ -44,13 +44,14 @@ function Circulo() {
       })
       .then(() =>
         enqueueSnackbar('O círculo foi desenhado.', { variant: 'success' })
-      );
+      )
+      .catch((error) => enqueueSnackbar(`${error}`, { variant: 'error' }));
   }
 
   return (
     <div className="">
       <span className="text-3xl mb-2">Desenhar Círculo</span>
-      <hr className="h-px bg-gray-100 border-0 mb-4" />
+      <hr className="h-px bg-gray-100 border-0 mb-4 mt-2" />
       <form
         className="flex flex-col gap-2 items-center"
         onSubmit={handleSubmit(handleClick)}
@@ -80,8 +81,16 @@ function Circulo() {
             color="bg-emerald-500"
             hover="hover:bg-emerald-600"
             onClick={() => {
-              canvasContext?.clearCanvas();
-              enqueueSnackbar('O display foi limpo.', { variant: 'info' });
+              canvasContext
+                ?.clearCanvas()
+                .then(() =>
+                  enqueueSnackbar('O display foi limpo.', {
+                    variant: 'info'
+                  })
+                )
+                .catch((error) =>
+                  enqueueSnackbar(`${error}`, { variant: 'error' })
+                );
             }}
           />
         </div>
