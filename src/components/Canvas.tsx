@@ -1,11 +1,7 @@
-import { LegacyRef, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-export const Canvas = ({
-  refCanvas
-}: {
-  refCanvas: LegacyRef<HTMLCanvasElement>;
-}) => {
-  const [color, setColor] = useState<string | null>();
+export default function Canvas() {
+  const [color, setColor] = useState<string | null>('black');
 
   useEffect(() => {
     setColor(localStorage.getItem('bg-canvas-color'));
@@ -14,10 +10,9 @@ export const Canvas = ({
   return (
     <canvas
       id="canvas"
-      ref={refCanvas}
       width="800"
       height="600"
-      style={{ backgroundColor: `${color ? color : 'black'}` }}
+      style={{ backgroundColor: `${color}` }}
     />
   );
-};
+}

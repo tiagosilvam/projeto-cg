@@ -1,17 +1,16 @@
 'use client';
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import Grow from '@/components/Alert/transition';
 import { Button } from '@/components/Button';
 import Input from '@/components/Input';
 import { RadioButton } from '@/components/RadioButton';
 
-import { CanvasGlobalContext } from '@/contexts/canvas';
+import { CanvasGlobalContext } from '@/contexts/Canvas';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { closeSnackbar, useSnackbar } from 'notistack';
+import { useSnackbar } from 'notistack';
 import { z } from 'zod';
 
 import { PaintBrushIcon, TrashIcon } from '@heroicons/react/24/solid';
@@ -40,9 +39,8 @@ type PositionFormData = z.infer<typeof PositionFormSchema>;
 function Reta() {
   const canvasContext = useContext(CanvasGlobalContext);
   const [value, setValue] = useState('DDA');
-  const { enqueueSnackbar } = useSnackbar();
-
   const [pontos, setPontos] = useState<number[][]>();
+  const { enqueueSnackbar } = useSnackbar();
 
   const {
     register,
@@ -52,50 +50,22 @@ function Reta() {
     resolver: zodResolver(PositionFormSchema)
   });
 
-  useEffect(() => {
-    if (pontos) {
-      enqueueSnackbar(
-        <div className="w-44 text-gray-900 flex flex-col items-center">
-          <label className="block mb-2 text-sm">Pontos</label>
-          <select
-            multiple
-            disabled
-            className="h-20 text-center bg-gray-50 border border-zinc-300 text-sm rounded-lg w-full p-2"
-          >
-            {pontos.map(([x, y]: Array<number>, index) => (
-              <option
-                className="hover:bg-zinc-100 hover:text-blue-500"
-                key={index}
-              >
-                {x.toFixed()}, {y.toFixed()}
-              </option>
-            ))}
-          </select>
-        </div>,
-        {
-          variant: 'default',
-          TransitionComponent: Grow,
-          anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
-          autoHideDuration: 10000,
-          preventDuplicate: true,
-          key: 'barPoints'
-        }
-      );
-    }
-  }, [pontos, enqueueSnackbar]);
-
   async function handleClick({ posX, posY, posX2, posY2 }: PositionFormData) {
     if (pontos) setPontos([]);
-    value === 'DDA'
-      ? setPontos(canvasContext?.desenharRetaDDA(posX, posY, posX2, posY2))
-      : setPontos(canvasContext?.desenharRetaPM(posX, posY, posX2, posY2));
-    enqueueSnackbar(`Desenhado usando o algorimo ${value}.`, {
-      variant: 'success'
-    });
+    canvasContext
+      ?.desenharReta(posX, posY, posX2, posY2, value)
+      .then((result) => {
+        console.log(result);
+      })
+      .then(() =>
+        enqueueSnackbar(`A reta foi desenhada usando o algorítmo ${value}.`, {
+          variant: 'success'
+        })
+      );
   }
 
   return (
-    <div className="flex flex-col bg-white p-4 rounded shadow-sm w-96">
+    <div className="">
       <span className="text-3xl mb-2">Desenhar Reta</span>
       <hr className="h-px bg-gray-100 border-0 mb-4" />
       <div className="flex flex-row gap-3 mb-4">
@@ -168,8 +138,6 @@ function Reta() {
             hover="hover:bg-emerald-600"
             onClick={() => {
               canvasContext?.clearCanvas();
-              enqueueSnackbar('O display foi limpo.', { variant: 'info' });
-              closeSnackbar('barPoints');
             }}
           />
         </div>

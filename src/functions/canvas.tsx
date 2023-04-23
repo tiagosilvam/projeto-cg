@@ -147,6 +147,8 @@ export function desenharPontoMedioCirculo(
   ctx: CanvasRenderingContext2D,
   r: number
 ) {
+  const pontos = [];
+
   let y = r;
   let d;
   if (y % 2 === 0) {
@@ -156,6 +158,7 @@ export function desenharPontoMedioCirculo(
   }
   let x = 0;
   pontoCirculo(ctx, x, y);
+  pontos.push([x, y]);
   while (y > x) {
     if (d < 0) {
       d += 2.0 * x + 3.0;
@@ -166,6 +169,7 @@ export function desenharPontoMedioCirculo(
     x++;
     pontoCirculo(ctx, x, y);
   }
+  return pontos;
 }
 
 function pontoCirculo(ctx: CanvasRenderingContext2D, x: number, y: number) {

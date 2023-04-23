@@ -1,12 +1,12 @@
 'use client';
 
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/Button';
 import Input from '@/components/Input';
 
-import { CanvasGlobalContext } from '@/contexts/canvas';
+import { CanvasGlobalContext } from '@/contexts/Canvas';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSnackbar } from 'notistack';
@@ -25,6 +25,7 @@ type PositionFormData = z.infer<typeof PositionFormSchema>;
 
 function Circulo() {
   const canvasContext = useContext(CanvasGlobalContext);
+  const [pontos, setPontos] = useState<number[][]>();
   const { enqueueSnackbar } = useSnackbar();
 
   const {
@@ -35,13 +36,19 @@ function Circulo() {
     resolver: zodResolver(PositionFormSchema)
   });
 
-  function handleClick({ raio }: PositionFormData) {
-    canvasContext?.desenharPontoMedioCirculo(raio);
-    enqueueSnackbar('O círculo foi desenhado.', { variant: 'success' });
+  async function handleClick({ raio }: PositionFormData) {
+    await canvasContext
+      ?.desenharCirculo(raio)
+      .then((result) => {
+        console.log(result);
+      })
+      .then(() =>
+        enqueueSnackbar('O círculo foi desenhado.', { variant: 'success' })
+      );
   }
 
   return (
-    <div className="flex flex-col bg-white p-4 rounded shadow-sm w-96">
+    <div className="">
       <span className="text-3xl mb-2">Desenhar Círculo</span>
       <hr className="h-px bg-gray-100 border-0 mb-4" />
       <form

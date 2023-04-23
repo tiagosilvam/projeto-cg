@@ -1,52 +1,91 @@
-import { createContext } from 'react';
+import { createContext, useState } from 'react';
 
 import * as CanvasFunctions from '@/functions/canvas';
 
 type ContextProps = {
-  setPixel: (x: number, y: number) => void;
-  desenharRetaDDA: (x: number, y: number, x2: number, y2: number) => number[][];
-  desenharRetaPM: (x: number, y: number, x2: number, y2: number) => number[][];
-  desenharPontoMedioCirculo: (r: number) => void;
+  drawPixel: (x: number, y: number) => Promise<void>;
+  desenharReta: (
+    x: number,
+    y: number,
+    x2: number,
+    y2: number,
+    type: string
+  ) => Promise<number[][]>;
+  desenharCirculo: (r: number) => Promise<number[][]>;
   clearCanvas: () => void;
   inp_to_ndc: ([x, y]: [x: number, y: number]) => number[];
   user_to_ndc: (x: number, y: number) => number[];
   ndc_to_dc: (x: number, y: number) => number[];
-  getCtx: () => void;
 };
 
 export const CanvasGlobalContext = createContext<ContextProps | null>(null);
 
-export const CanvasGlobalContextProvider = ({
-  children,
-  ctx
-}: {
-  children: React.ReactNode;
-  ctx: any;
-}) => {
+export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
+  const [grid, setGrid] = useState(false);
+
+  function getCanvas() {
+    return new Promise<NonNullable<CanvasRenderingContext2D>>(
+      (resolve, reject) => {
+        //const canvas: any = null;
+        const canvas: any = document.getElementById('canvas');
+        if (canvas != null) {
+          resolve(canvas.getContext('2d'));
+        }
+        reject('Ops! Erro interno no display.');
+      }
+    );
+  }
+
   // Pixel
-  function setPixel(x: number, y: number) {
-    CanvasFunctions.setPixel(ctx, x, y);
+  function drawPixel(x: number, y: number) {
+    return new Promise<void>((resolve, reject) => {
+      getCanvas()
+        .then((ctx) => resolve(CanvasFunctions.setPixel(ctx, x, y)))
+        .catch((e) => reject(e));
+    });
   }
 
   // Reta
-  function desenharRetaDDA(x: number, y: number, x2: number, y2: number) {
-    CanvasFunctions.setLines(ctx);
-    return CanvasFunctions.desenharRetaDDA(ctx, x, y, x2, y2);
-  }
-
-  function desenharRetaPM(x: number, y: number, x2: number, y2: number) {
-    CanvasFunctions.setLines(ctx);
-    return CanvasFunctions.desenharRetaPM(ctx, x, y, x2, y2);
+  function desenharReta(
+    x: number,
+    y: number,
+    x2: number,
+    y2: number,
+    type: string
+  ) {
+    setGrid(true);
+    return new Promise<number[][]>((resolve, reject) => {
+      getCanvas()
+        .then((ctx) => {
+          !grid && CanvasFunctions.setLines(ctx);
+          resolve(
+            type === 'DDA'
+              ? CanvasFunctions.desenharRetaDDA(ctx, x, y, x2, y2)
+              : CanvasFunctions.desenharRetaPM(ctx, x, y, x2, y2)
+          );
+        })
+        .catch((e) => reject(e));
+    });
   }
 
   // Circulo
-  function desenharPontoMedioCirculo(raio: number) {
-    CanvasFunctions.setLines(ctx);
-    return CanvasFunctions.desenharPontoMedioCirculo(ctx, raio);
+  function desenharCirculo(raio: number) {
+    setGrid(true);
+    return new Promise<number[][]>((resolve, reject) => {
+      getCanvas()
+        .then((ctx) => {
+          !grid && CanvasFunctions.setLines(ctx);
+          resolve(CanvasFunctions.desenharPontoMedioCirculo(ctx, raio));
+        })
+        .catch((e) => reject(e));
+    });
   }
 
   function clearCanvas() {
-    CanvasFunctions.clear(ctx);
+    getCanvas().then((ctx) => {
+      setGrid(false);
+      CanvasFunctions.clear(ctx);
+    });
   }
 
   // Transformações
@@ -62,22 +101,16 @@ export const CanvasGlobalContextProvider = ({
     return CanvasFunctions.ndc_to_dc(x, y);
   }
 
-  function getCtx() {
-    return ctx;
-  }
-
   return (
     <CanvasGlobalContext.Provider
       value={{
-        setPixel,
-        desenharRetaDDA,
-        desenharRetaPM,
+        drawPixel,
+        desenharReta,
         clearCanvas,
-        desenharPontoMedioCirculo,
+        desenharCirculo,
         inp_to_ndc,
         user_to_ndc,
-        ndc_to_dc,
-        getCtx
+        ndc_to_dc
       }}
     >
       {children}
@@ -85,4 +118,4 @@ export const CanvasGlobalContextProvider = ({
   );
 };
 
-export default CanvasGlobalContextProvider;
+export default CanvasProvider;

@@ -1,11 +1,8 @@
 'use client';
 
-import { useContext } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 
 import { Form } from '@/components/Form';
-
-import { CanvasGlobalContext } from '@/contexts/canvas';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -31,8 +28,6 @@ function Test() {
   async function createUser(data: CreateUserData) {
     console.log(data);
   }
-
-  const context = useContext(CanvasGlobalContext);
 
   const {
     handleSubmit,

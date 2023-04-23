@@ -1,36 +1,31 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-
 import AlertProvider from '@/components/Alert/Alert';
-import { Canvas } from '@/components/Canvas';
+import Loading from '@/components/LoadingSpin';
 
-import CanvasGlobalContextProvider from '@/contexts/canvas';
+import dynamic from 'next/dynamic';
+import CanvasProvider from '../../contexts/Canvas';
 
 export default function FigurasLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [canvasContext, setCanvasContext] =
-    useState<CanvasRenderingContext2D | null>();
-
-  useEffect(() => {
-    const context = canvasRef.current?.getContext('2d');
-    setCanvasContext(context);
-  }, [canvasRef]);
+  const Canvas = dynamic(() => import('@/components/Canvas'), {
+    ssr: false,
+    loading: () => <Loading />
+  });
 
   return (
     <div className="flex justify-evenly items-center w-full">
-      <div className="bg-white p-2 rounded shadow-sm">
-        <Canvas refCanvas={canvasRef} />
+      <div className="flex items-center justify-center bg-white w-[810px] h-[610px] rounded shadow-sm">
+        <Canvas />
       </div>
-      <div className="flex flex-col justify-evenly">
-        <div className="flex flex-col justify-evenly gap-5">
-          <CanvasGlobalContextProvider ctx={canvasContext}>
+      <div className="flex flex-col bg-white p-4 rounded shadow-sm w-96 justify-evenly">
+        <div className="flex flex-col justify-evenly gap-2">
+          <CanvasProvider>
             <AlertProvider>{children}</AlertProvider>
-          </CanvasGlobalContextProvider>
+          </CanvasProvider>
         </div>
       </div>
     </div>

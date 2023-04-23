@@ -73,7 +73,9 @@ const ButtonSettings = () => {
                 className="w-4 h-4 border hover:border-blue-500"
                 key={color}
                 style={{ backgroundColor: `${color}` }}
-                onClick={() => localStorage.setItem('pixel-color', `${color}`)}
+                onClick={() => {
+                  localStorage.setItem('pixel-color', `${color}`);
+                }}
               />
             ))}
           </div>
