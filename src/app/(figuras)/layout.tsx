@@ -3,8 +3,9 @@
 import AlertProvider from '@/components/Alert/Alert';
 import Loading from '@/components/LoadingSpin';
 
+import CanvasProvider from '@/contexts/canvas';
+
 import dynamic from 'next/dynamic';
-import CanvasProvider from '../../contexts/Canvas';
 
 export default function FigurasLayout({
   children

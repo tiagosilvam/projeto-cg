@@ -4,7 +4,7 @@ import { useContext } from 'react';
 
 import { Button } from '@/components/Button';
 
-import { CanvasGlobalContext } from '@/contexts/Canvas';
+import { CanvasGlobalContext } from '@/contexts/canvas';
 
 import { useSnackbar } from 'notistack';
 
