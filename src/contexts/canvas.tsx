@@ -16,7 +16,7 @@ type Context = {
   inp_to_ndc: ([x, y]: [x: number, y: number]) => number[];
   user_to_ndc: (x: number, y: number) => number[];
   ndc_to_dc: (x: number, y: number) => number[];
-  cube: () => Promise<void>;
+  getContext: () => Promise<any>;
 };
 
 export const CanvasGlobalContext = createContext<Context | null>(null);
@@ -25,16 +25,14 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
   const [grid, setGrid] = useState(false);
 
   function getCanvas() {
-    return new Promise<NonNullable<CanvasRenderingContext2D>>(
-      (resolve, reject) => {
-        //const canvas: any = null;
-        const canvas: any = document.getElementById('canvas');
-        if (canvas != null) {
-          resolve(canvas.getContext('2d'));
-        }
-        reject('Ops! Erro interno no display.');
+    return new Promise<any>((resolve, reject) => {
+      //const canvas: any = null;
+      const canvas = document.getElementById('canvas');
+      if (canvas != null) {
+        resolve(canvas.getContext('2d'));
       }
-    );
+      reject('Ops! Erro interno no display.');
+    });
   }
 
   // Pixel
@@ -58,7 +56,7 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
     return new Promise<number[][]>((resolve, reject) => {
       getCanvas()
         .then((ctx) => {
-          !grid && CanvasFunctions.setLines(ctx);
+          //!grid && CanvasFunctions.setLines(ctx);
           resolve(
             type === 'DDA'
               ? CanvasFunctions.desenharRetaDDA(ctx, x, y, x2, y2)
@@ -106,10 +104,10 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
     return CanvasFunctions.ndc_to_dc(x, y);
   }
 
-  function cube() {
-    return new Promise<void>((resolve, reject) => {
+  function getContext() {
+    return new Promise<CanvasRenderingContext2D>((resolve, reject) => {
       getCanvas()
-        .then((ctx) => resolve(CanvasFunctions.desenharCubo(ctx)))
+        .then((ctx) => resolve(ctx))
         .catch((e) => reject(e));
     });
   }
@@ -124,7 +122,7 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         inp_to_ndc,
         user_to_ndc,
         ndc_to_dc,
-        cube
+        getContext
       }}
     >
       {children}

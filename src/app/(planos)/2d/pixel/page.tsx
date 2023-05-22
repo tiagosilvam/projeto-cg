@@ -13,7 +13,7 @@ import { z } from 'zod';
 
 import { PaintBrushIcon, TrashIcon } from '@heroicons/react/24/solid';
 
-import { CanvasGlobalContext } from '../../../contexts/Canvas';
+import { CanvasGlobalContext } from '../../../../contexts/Canvas';
 
 const PositionFormSchema = z.object({
   posX: z.coerce

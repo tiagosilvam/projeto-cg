@@ -29,7 +29,7 @@ export default function Navbar() {
           </Link>
           <Link
             className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-blue-500 mr-4"
-            href="/pixel"
+            href="/2d/pixel"
           >
             Pixel
           </Link>
@@ -48,7 +48,7 @@ export default function Navbar() {
           </span>
           <Link
             className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-blue-500 mr-4"
-            href="/3d/test"
+            href="/3d/canvas"
           >
             3D
           </Link>

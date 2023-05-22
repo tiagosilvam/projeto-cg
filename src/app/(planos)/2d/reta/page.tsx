@@ -62,6 +62,7 @@ function Reta() {
           variant: 'success'
         })
       )
+      .then(() => console.log(pontos))
       .catch((error) =>
         enqueueSnackbar(`${error}`, {
           variant: 'error'
@@ -75,13 +76,13 @@ function Reta() {
       <hr className="h-px bg-gray-100 border-0 mb-4 mt-2" />
       <div className="flex flex-row gap-3 mb-4">
         <RadioButton
-          name="Radio"
+          name="DDA"
           label="DDA"
           onClick={() => setValue('DDA')}
           defaultChecked
         />
         <RadioButton
-          name="Radio"
+          name="PM"
           label="Ponto médio"
           onClick={() => setValue('ponto médio')}
         />
