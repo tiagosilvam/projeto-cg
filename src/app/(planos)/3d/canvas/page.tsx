@@ -57,7 +57,6 @@ export default function Page() {
     handleSubmit,
     control,
     formState: { errors },
-    resetField,
     getValues
   } = useForm<PositionFormData>({
     resolver: zodResolver(PositionFormSchema)
@@ -243,7 +242,7 @@ export default function Page() {
     }
   }
 
-  async function handleClick(data: PositionFormData) {
+  async function handleClick({ data }: PositionFormData) {
     if (forma && operacao) {
       return getMatrizTransform(operacao, data)
         .then((matriz) => {
@@ -319,7 +318,7 @@ export default function Page() {
               <select
                 className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 h-10 bg-transparent"
                 defaultValue="Selecione uma figura"
-                onClick={(e) =>
+                onClick={(e: any) =>
                   setForma(
                     generateForm(e.currentTarget.value, getValues('size'))
                   )

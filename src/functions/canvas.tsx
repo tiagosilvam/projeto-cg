@@ -266,7 +266,7 @@ export function user_to_ndc(userX: number, userY: number) {
 }
 
 export function getMatrizTransform(transformacao: string, data: any) {
-  const { x, y, z, fator, position, rotacao } = data.data[0];
+  const { x, y, z, fator, position, rotacao } = data[0];
   const matrizesTransformacao = {
     translacao: {
       matriz: [
@@ -352,7 +352,7 @@ export function getMatrizTransform(transformacao: string, data: any) {
     }
   };
 
-  return new Promise((resolve, reject) => {
+  return new Promise<number[][] | any>((resolve, reject) => {
     Object.entries(matrizesTransformacao).find(([key, value]) => {
       if (transformacao === key) {
         if (Object.hasOwn(value.matriz, position)) {
