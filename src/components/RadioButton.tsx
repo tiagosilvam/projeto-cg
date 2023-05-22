@@ -15,7 +15,7 @@ export function RadioButton({ name, label, onClick, defaultChecked }: Props) {
         onClick={onClick}
         defaultChecked={defaultChecked}
       />
-      <label className="ml-2 text-sm font-medium">{label}</label>
+      <label className="ml-1 text-sm">{label}</label>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 'use client';
 
-import AlertProvider from '@/components/Alert/Alert';
 import Loading from '@/components/LoadingSpin';
 
 import CanvasProvider from '@/contexts/Canvas';
@@ -24,9 +23,7 @@ export default function Figuras2DLayout({
       </div>
       <div className="flex flex-col bg-white p-4 rounded shadow-sm w-96">
         <div className="flex flex-col justify-evenly gap-2">
-          <CanvasProvider>
-            <AlertProvider>{children}</AlertProvider>
-          </CanvasProvider>
+          <CanvasProvider>{children}</CanvasProvider>
         </div>
       </div>
     </div>

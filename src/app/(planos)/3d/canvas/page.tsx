@@ -4,18 +4,19 @@
 import { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
-import AlertProvider from '@/components/Alert/Alert';
 import { Button } from '@/components/Button';
 import Input from '@/components/Input';
 import Loading from '@/components/LoadingSpin';
 import { RadioButton } from '@/components/RadioButton';
 
-import { getMatrizTransform } from '@/functions/canvas';
+import { getMatrizTransform, generateForm } from '@/functions/canvas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import dynamic from 'next/dynamic';
 import { useSnackbar } from 'notistack';
 import p5Types from 'p5';
 import { z } from 'zod';
+
+import { CheckIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 const Canvas = dynamic(
   () => import('@/components/Sketch').then((component) => component.default),
@@ -31,6 +32,7 @@ type Forma = {
 };
 
 const PositionFormSchema = z.object({
+  size: z.coerce.number(),
   data: z.array(
     z.object({
       x: z.coerce.number().optional(),
@@ -46,7 +48,6 @@ const PositionFormSchema = z.object({
 type PositionFormData = z.infer<typeof PositionFormSchema>;
 
 export default function Page() {
-  const [size, setSize] = useState<number>(0);
   const [forma, setForma] = useState<Forma>();
   const [operacao, setOperacao] = useState('');
   const { enqueueSnackbar } = useSnackbar();
@@ -55,7 +56,9 @@ export default function Page() {
     register,
     handleSubmit,
     control,
-    formState: { errors }
+    formState: { errors },
+    resetField,
+    getValues
   } = useForm<PositionFormData>({
     resolver: zodResolver(PositionFormSchema)
   });
@@ -65,86 +68,12 @@ export default function Page() {
     name: 'data'
   });
 
-  const formas = {
-    quadrado: {
-      nome: 'Quadrado',
-      vertices: [
-        [0, 0, 0, 1],
-        [-size, 0, 0, 1],
-        [-size, -size, 0, 1],
-        [0, -size, 0, 1],
-        [0, 0, -size, 1],
-        [-size, 0, -size, 1],
-        [-size, -size, -size, 1],
-        [0, -size, -size, 1]
-      ],
-      lados: [
-        [0, 1],
-        [1, 2],
-        [2, 3],
-        [3, 0],
-        [4, 5],
-        [5, 6],
-        [6, 7],
-        [7, 4],
-        [0, 4],
-        [1, 5],
-        [2, 6],
-        [3, 7]
-      ]
-    },
-    triangulo: {
-      nome: 'Triangulo',
-      vertices: [
-        [0, 0, 0, 1],
-        [-size, 0, 0, 1],
-        [0, -size, 0, 1],
-        [0, 0, -size, 1]
-      ],
-      lados: [
-        [0, 1],
-        [1, 2],
-        [2, 0],
-        [0, 3],
-        [1, 3],
-        [2, 3]
-      ]
-    },
-    paralelepipedo: {
-      nome: 'Paralelepipedo',
-      vertices: [
-        [0, 0, 0, 1],
-        [-size * 1.5, 0, 0, 1],
-        [-size * 1.5, -size, 0, 1],
-        [0, -size, 0, 1],
-        [0, 0, -size, 1],
-        [-size * 1.5, 0, -size, 1],
-        [-size * 1.5, -size, -size, 1],
-        [0, -size, -size, 1]
-      ],
-      lados: [
-        [0, 1],
-        [1, 2],
-        [2, 3],
-        [3, 0],
-        [4, 5],
-        [5, 6],
-        [6, 7],
-        [7, 4],
-        [0, 4],
-        [1, 5],
-        [2, 6],
-        [3, 7]
-      ]
-    }
-  };
-
   function getInput() {
     switch (operacao) {
       case 'translacao': {
         return fields.map((field, i) => {
           return (
-            <div key={field.id}>
+            <div key={field.id} className="flex space-x-2">
               <Input
                 placeholder="Valor de X"
                 type="number"
@@ -192,7 +121,7 @@ export default function Page() {
       case 'rotacao': {
         return (
           <div>
-            <div>
+            <div className="flex mb-4 space-x-4">
               <RadioButton
                 name="Local"
                 label="Em torno de X"
@@ -210,47 +139,49 @@ export default function Page() {
                 onClick={() => replace({ position: 'z' })}
               />
             </div>
-            {fields.map((field, i) => {
-              return (
-                <div key={field.id}>
-                  <Input
-                    placeholder="Valor em graus"
-                    type="number"
-                    step="any"
-                    required
-                    {...register(`data.${i}.rotacao`)}
-                    error={errors.data?.[i]?.rotacao}
-                  />
-                </div>
-              );
-            })}
+            <div>
+              {fields.map((field, i) => {
+                return (
+                  <div key={field.id}>
+                    <Input
+                      placeholder="Valor em graus"
+                      type="number"
+                      step="any"
+                      required
+                      {...register(`data.${i}.rotacao`)}
+                      error={errors.data?.[i]?.rotacao}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         );
       }
       case 'cisalhamento': {
         return (
           <div>
-            <div>
+            <div className="flex mb-4 space-x-4">
               <RadioButton
                 name="Local"
-                label="Em torno de X"
+                label="Em YZ"
                 onClick={() => replace({ position: 'x' })}
                 defaultChecked
               />
               <RadioButton
                 name="Local"
-                label="Em torno de Y"
+                label="Em XZ"
                 onClick={() => replace({ position: 'y' })}
               />
               <RadioButton
                 name="Local"
-                label="Em torno de Z"
+                label="Em XY"
                 onClick={() => replace({ position: 'z' })}
               />
             </div>
             {fields.map((field, i) => {
               return (
-                <div key={field.id}>
+                <div key={field.id} className="flex space-x-4">
                   {field.position !== 'x' && (
                     <Input
                       placeholder="Valor de X"
@@ -289,7 +220,7 @@ export default function Page() {
       }
       case 'reflexao': {
         return (
-          <div>
+          <div className="flex mb-4 space-x-4">
             <RadioButton
               name="Local"
               label="Em torno de X"
@@ -313,22 +244,25 @@ export default function Page() {
   }
 
   async function handleClick(data: PositionFormData) {
-    console.log(data)
     if (forma) {
-      getMatrizTransform(operacao, data)
+      return getMatrizTransform(operacao, data)
         .then((matriz) => {
           setForma({
             vertices: multiplyMatrices(forma.vertices, matriz),
             lados: forma.lados
           });
+          enqueueSnackbar('A transformação efetuada com sucesso!', {
+            variant: 'success'
+          });
         })
-        .catch((e) => console.log(e));
+        .catch((error) => enqueueSnackbar(`${error}`, { variant: 'error' }));
     }
-    enqueueSnackbar('O círculo foi desenhado.', { variant: 'success' });
+    enqueueSnackbar('Selecione uma transformacão.', { variant: 'error' });
   }
 
   function clear() {
     setForma(undefined);
+    enqueueSnackbar('O display foi limpo.', { variant: 'info' });
   }
 
   function multiplyMatrices(vertices: number[][], transformacao: number[][]) {
@@ -361,34 +295,49 @@ export default function Page() {
   }
 
   return (
-    <AlertProvider>
-      <div className="flex justify-evenly items-center w-full">
-        <div className="flex items-center justify-center bg-white w-[810px] h-[610px] rounded shadow-sm">
-          <Canvas draw={draw} />
-        </div>
-        <div className="flex flex-col bg-white p-4 rounded shadow-sm w-96 gap-4">
-          <div className="flex space-x-2">
-            <input
-              className="border-gray-200 text-sm rounded-lg hover:bg-gray-50 block w-72 p-2.5 bg-transparent"
-              placeholder="Tamanho da figura"
-              onChange={(e) => setSize(parseFloat(e.target.value))}
-            />
-          </div>
-          <div>
-            <select disabled={size == 0} defaultValue="Selecione uma figura">
-              <option>Selecione uma figura</option>
-              {Object.values(formas).map((e, i) => (
-                <option onClick={() => setForma(e)} key={i}>
-                  {e.nome}
-                </option>
-              ))}
-            </select>
+    <div className="flex justify-evenly items-center w-full">
+      <div className="flex items-center justify-center bg-white w-[810px] h-[610px] rounded shadow-sm">
+        <Canvas draw={draw} />
+      </div>
+      <div className="flex flex-col bg-white p-4 rounded shadow-sm w-[420px]">
+        <span className="text-3xl mb-2">Desenho 3D</span>
+        <hr className="h-px bg-gray-100 border-0 mb-4" />
+        <form
+          className="flex flex-col items-center"
+          onSubmit={handleSubmit(handleClick)}
+        >
+          <div className="flex flex-col">
+            <div className="flex space-x-4 justify-center">
+              <Input
+                placeholder="Tamanho da forma"
+                type="number"
+                step="any"
+                required
+                {...register('size')}
+                error={errors.size}
+              />
+              <select
+                className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 h-10 bg-transparent"
+                defaultValue="Selecione uma figura"
+                onClick={(e) =>
+                  setForma(
+                    generateForm(e.currentTarget.value, getValues('size'))
+                  )
+                }
+              >
+                <option>Selecione uma forma</option>
+                <option value="quadrado">Quadrado</option>
+                <option value="triangulo">Triângulo</option>
+                <option value="retangulo">Retângulo</option>
+              </select>
+            </div>
             <select
-              disabled={forma == null}
+              className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 disabled:text-zinc-200 disabled:bg-zinc-100 bg-transparent"
               defaultValue="Selecione uma transformação"
               onClick={(e) => {
                 setOperacao(e.currentTarget.value);
               }}
+              disabled={forma == null}
             >
               <option value={''}>Selecione uma transformação</option>
               <option
@@ -436,26 +385,26 @@ export default function Page() {
               </option>
             </select>
           </div>
-          <form
-            className="flex flex-col gap-2 items-center"
-            onSubmit={handleSubmit(handleClick)}
-          >
-            <div>{getInput()}</div>
+          <div className="mt-4">{getInput()}</div>
+          <div className="flex space-x-4">
             <Button
-              name="Aplicar transformação"
+              name="Transformar"
               type="submit"
               color="bg-blue-500"
               hover="hover:bg-blue-600"
+              icon={<CheckIcon className="w-6 h-6 mr-3" />}
             />
             <Button
               name="Limpar tela"
-              color="bg-blue-500"
-              hover="hover:bg-blue-600"
+              color="bg-emerald-500"
+              type="button"
+              hover="hover:bg-emerald-600"
               onClick={() => clear()}
+              icon={<TrashIcon className="w-6 h-6 mr-3" />}
             />
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
-    </AlertProvider>
+    </div>
   );
 }

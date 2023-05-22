@@ -267,8 +267,6 @@ export function user_to_ndc(userX: number, userY: number) {
 
 export function getMatrizTransform(transformacao: string, data: any) {
   const { x, y, z, fator, position, rotacao } = data.data[0];
-
-  console.log(x, y, z, fator, position, rotacao);
   const matrizesTransformacao = {
     translacao: {
       matriz: [
@@ -366,4 +364,82 @@ export function getMatrizTransform(transformacao: string, data: any) {
     });
     reject('Não foi possível gerar a matriz.');
   });
+}
+
+export function generateForm(
+  forma: 'quadrado' | 'triangulo' | 'retangulo',
+  size: number
+) {
+  const formas = {
+    quadrado: {
+      vertices: [
+        [0, 0, 0, 1],
+        [-size, 0, 0, 1],
+        [-size, -size, 0, 1],
+        [0, -size, 0, 1],
+        [0, 0, -size, 1],
+        [-size, 0, -size, 1],
+        [-size, -size, -size, 1],
+        [0, -size, -size, 1]
+      ],
+      lados: [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 0],
+        [4, 5],
+        [5, 6],
+        [6, 7],
+        [7, 4],
+        [0, 4],
+        [1, 5],
+        [2, 6],
+        [3, 7]
+      ]
+    },
+    triangulo: {
+      vertices: [
+        [0, 0, 0, 1],
+        [-size, 0, 0, 1],
+        [0, -size, 0, 1],
+        [0, 0, -size, 1]
+      ],
+      lados: [
+        [0, 1],
+        [1, 2],
+        [2, 0],
+        [0, 3],
+        [1, 3],
+        [2, 3]
+      ]
+    },
+    retangulo: {
+      vertices: [
+        [0, 0, 0, 1],
+        [-size * 1.5, 0, 0, 1],
+        [-size * 1.5, -size, 0, 1],
+        [0, -size, 0, 1],
+        [0, 0, -size, 1],
+        [-size * 1.5, 0, -size, 1],
+        [-size * 1.5, -size, -size, 1],
+        [0, -size, -size, 1]
+      ],
+      lados: [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 0],
+        [4, 5],
+        [5, 6],
+        [6, 7],
+        [7, 4],
+        [0, 4],
+        [1, 5],
+        [2, 6],
+        [3, 7]
+      ]
+    }
+  };
+
+  return formas[forma];
 }

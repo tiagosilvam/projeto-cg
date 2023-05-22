@@ -10,6 +10,7 @@ type Props = {
   step?: string;
   required?: boolean;
   error?: FieldError;
+  onChange?: any;
 };
 
 const Input = forwardRef<HTMLInputElement, Props>((props, ref) => {
