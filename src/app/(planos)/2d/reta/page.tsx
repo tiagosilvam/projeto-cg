@@ -76,13 +76,13 @@ function Reta() {
       <hr className="h-px bg-gray-100 border-0 mb-4 mt-2" />
       <div className="flex flex-row gap-3 mb-4">
         <RadioButton
-          name="DDA"
+          name="Reta"
           label="DDA"
           onClick={() => setValue('DDA')}
           defaultChecked
         />
         <RadioButton
-          name="PM"
+          name="Reta"
           label="Ponto médio"
           onClick={() => setValue('ponto médio')}
         />
