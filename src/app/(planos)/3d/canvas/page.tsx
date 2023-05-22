@@ -244,7 +244,7 @@ export default function Page() {
   }
 
   async function handleClick(data: PositionFormData) {
-    if (forma) {
+    if (forma && operacao) {
       return getMatrizTransform(operacao, data)
         .then((matriz) => {
           setForma({
