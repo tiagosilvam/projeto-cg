@@ -243,6 +243,7 @@ export default function Page() {
   }
 
   async function handleClick({ data }: PositionFormData) {
+    console.log(data);
     if (forma && operacao) {
       return getMatrizTransform(operacao, data)
         .then((matriz) => {
@@ -250,6 +251,7 @@ export default function Page() {
             vertices: multiplyMatrices(forma.vertices, matriz),
             lados: forma.lados
           });
+          console.log(matriz);
           enqueueSnackbar('A transformação efetuada com sucesso!', {
             variant: 'success'
           });

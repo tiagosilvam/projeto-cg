@@ -267,6 +267,9 @@ export function user_to_ndc(userX: number, userY: number) {
 
 export function getMatrizTransform(transformacao: string, data: any) {
   const { x, y, z, fator, position, rotacao } = data[0];
+
+  const radian = grausParaRadiano(rotacao);
+
   const matrizesTransformacao = {
     translacao: {
       matriz: [
@@ -288,19 +291,19 @@ export function getMatrizTransform(transformacao: string, data: any) {
       matriz: {
         x: [
           [1, 0, 0, 0],
-          [0, Math.cos(rotacao), -Math.sin(rotacao), 0],
-          [0, Math.sin(rotacao), Math.cos(rotacao), 0],
+          [0, Math.cos(radian), Math.sin(radian), 0],
+          [0, -Math.sin(radian), Math.cos(radian), 0],
           [0, 0, 0, 1]
         ],
         y: [
-          [Math.cos(rotacao), 0, Math.sin(rotacao), 0],
+          [Math.cos(radian), 0, -Math.sin(radian), 0],
           [0, 1, 0, 0],
-          [-Math.sin(rotacao), 0, Math.cos(rotacao), 0],
+          [Math.sin(radian), 0, Math.cos(radian), 0],
           [0, 0, 0, 1]
         ],
         z: [
-          [Math.cos(rotacao), -Math.sin(rotacao), 0, 0],
-          [Math.sin(rotacao), Math.cos(rotacao), 0, 0],
+          [Math.cos(radian), Math.sin(radian), 0, 0],
+          [-Math.sin(radian), Math.cos(radian), 0, 0],
           [0, 0, 1, 0],
           [0, 0, 0, 1]
         ]
@@ -364,6 +367,12 @@ export function getMatrizTransform(transformacao: string, data: any) {
     });
     reject('Não foi possível gerar a matriz.');
   });
+}
+
+// Convert graus para radiano
+function grausParaRadiano(angulo: number) {
+  const resultado = angulo * (3.14 / 180);
+  return resultado;
 }
 
 export function generateForm(
