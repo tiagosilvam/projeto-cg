@@ -7,7 +7,7 @@ import { Button } from '@/components/Button';
 import Input from '@/components/Input';
 import { RadioButton } from '@/components/RadioButton';
 
-import { CanvasGlobalContext } from '@/contexts/Canvas';
+import { CanvasGlobalContext } from '@/contexts/canvas';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSnackbar } from 'notistack';

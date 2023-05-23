@@ -6,14 +6,14 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/Button';
 import Input from '@/components/Input';
 
+import { CanvasGlobalContext } from '@/contexts/canvas';
+
 import { inp_to_ndc, user_to_ndc, ndc_to_dc } from '@/functions/canvas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSnackbar } from 'notistack';
 import { z } from 'zod';
 
 import { PaintBrushIcon, TrashIcon } from '@heroicons/react/24/solid';
-
-import { CanvasGlobalContext } from '../../../../contexts/Canvas';
 
 const PositionFormSchema = z.object({
   posX: z.coerce
