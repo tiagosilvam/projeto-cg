@@ -55,14 +55,13 @@ function Reta() {
     canvasContext
       ?.desenharReta(posX, posY, posX2, posY2, value)
       .then((result) => {
-        console.log(result);
+        setPontos(result);
       })
       .then(() =>
         enqueueSnackbar(`A reta foi desenhada usando o algorítmo ${value}.`, {
           variant: 'success'
         })
       )
-      .then(() => console.log(pontos))
       .catch((error) =>
         enqueueSnackbar(`${error}`, {
           variant: 'error'

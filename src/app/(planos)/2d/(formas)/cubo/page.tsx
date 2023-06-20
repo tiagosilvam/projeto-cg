@@ -1,14 +1,14 @@
 'use client';
 
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/Button';
 import Input from '@/components/Input';
+import { RadioButton } from '@/components/RadioButton';
 
 import { CanvasGlobalContext } from '@/contexts/canvas';
 
-import { inp_to_ndc, user_to_ndc, ndc_to_dc } from '@/functions/canvas2d';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSnackbar } from 'notistack';
 import { z } from 'zod';
@@ -23,39 +23,72 @@ const PositionFormSchema = z.object({
   posY: z.coerce
     .number()
     .min(-300, 'Valor mínimo: -300')
+    .max(300, 'Valor máximo: 300'),
+  size: z.coerce
+    .number()
+    .min(0, 'Valor mínimo: 0')
     .max(300, 'Valor máximo: 300')
 });
 
+type Forma = {
+  vertices: number[][];
+  lados: number[][];
+};
+
 type PositionFormData = z.infer<typeof PositionFormSchema>;
 
-function Pixel() {
+function Cubo() {
   const canvasContext = useContext(CanvasGlobalContext);
+  const [value, setValue] = useState('DDA');
+  const [pontos, setPontos] = useState<number[][]>();
   const { enqueueSnackbar } = useSnackbar();
+  const [forma, setForma] = useState<Forma>();
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    getValues
+    formState: { errors }
   } = useForm<PositionFormData>({
     resolver: zodResolver(PositionFormSchema)
   });
 
-  function handleClick({ posX, posY }: PositionFormData) {
+  async function handleClick({ posX, posY, size }: PositionFormData) {
+    if (pontos) setPontos([]);
     canvasContext
-      ?.drawPixel(posX, posY)
-      .then(() => {
-        enqueueSnackbar('O pixel foi desenhado.', { variant: 'success' });
+      ?.desenharCubo(posX, posY, size)
+      .then((result) => {
+        setForma(result);
       })
-      .catch((e) => {
-        enqueueSnackbar(`${e}`, { variant: 'error' });
-      });
+      .then(() =>
+        enqueueSnackbar(`O cubo foi desenhado usando o algorítmo ${value}.`, {
+          variant: 'success'
+        })
+      )
+      .catch((error) =>
+        enqueueSnackbar(`${error}`, {
+          variant: 'error'
+        })
+      );
   }
 
   return (
-    <div>
-      <span className="text-3xl mb-2">Desenhar Pixel</span>
+    <div className="">
+      <span className="text-3xl mb-2">Desenhar Cubo</span>
       <hr className="h-px bg-gray-100 border-0 mb-4 mt-2" />
+      <div className="flex flex-row gap-3 mb-4">
+        <RadioButton
+          name="Reta"
+          label="DDA"
+          onClick={() => setValue('DDA')}
+          defaultChecked
+        />
+        <RadioButton
+          name="Reta"
+          label="Ponto médio"
+          onClick={() => setValue('ponto médio')}
+        />
+      </div>
+      <hr className="h-px bg-gray-100 border-0 mb-4" />
       <form
         className="flex flex-col gap-2 items-center"
         onSubmit={handleSubmit(handleClick)}
@@ -76,6 +109,16 @@ function Pixel() {
             required
             {...register('posY')}
             error={errors.posY}
+          />
+        </div>
+        <div className="grid gap-2 md:grid-cols-2">
+          <Input
+            placeholder="Tamanho"
+            type="number"
+            step="any"
+            required
+            {...register('size')}
+            error={errors.size}
           />
         </div>
         <div className="flex gap-2">
@@ -107,30 +150,8 @@ function Pixel() {
           />
         </div>
       </form>
-      <div className="mt-2">
-        {getValues().posX && getValues().posY && (
-          <div className="mt-3">
-            <div className="flex flex-col">
-              <span>
-                INP para NDC:{' '}
-                {inp_to_ndc([getValues().posX, getValues().posY])
-                  .map((p: number) => p.toFixed(2))
-                  .join(', ')}
-              </span>
-              <span>
-                User para NDC:{' '}
-                {user_to_ndc(getValues().posX, getValues().posY).join(', ')}
-              </span>
-              <span>
-                NDC para DC:{' '}
-                {ndc_to_dc(getValues().posX, getValues().posY).join(', ')}
-              </span>
-            </div>
-          </div>
-        )}
-      </div>
     </div>
   );
 }
 
-export default Pixel;
+export default Cubo;

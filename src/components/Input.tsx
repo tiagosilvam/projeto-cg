@@ -23,7 +23,7 @@ const Input = forwardRef<HTMLInputElement, Props>((props, ref) => {
         ref={ref}
         {...props}
       />
-      <span className="text-red-400 text-xs ml-1 mt-1 flex items-center h-4">
+      <span className="text-red-400 text-xs ml-1 mt-1 flex items-center h-4 mb-1">
         {props.error && (
           <div className="flex flex-row">
             <ExclamationCircleIcon className="w-4 h-4 mr-1" />

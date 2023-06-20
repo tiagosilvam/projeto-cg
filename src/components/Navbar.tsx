@@ -33,13 +33,26 @@ export default function Navbar() {
           >
             Pixel
           </Link>
+          <Link
+            className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-blue-500 mr-4"
+            href="/2d/reta"
+          >
+            Reta
+          </Link>
           <span className="group block mt-4 lg:inline-block lg:mt-0 text-white hover:text-blue-500 mr-4 cursor-pointer">
             2D
             <div className="hidden group-hover:block absolute bg-white border rounded shadow-sm text-gray-900 py-2 w-32">
               <ul className="flex flex-col">
-                <Link href="/2d/reta">
-                  <li className="hover:bg-zinc-100 px-4 py-2">Reta</li>
+                <Link href="/2d/cubo">
+                  <li className="hover:bg-zinc-100 px-4 p-2">Cubo</li>
                 </Link>
+              </ul>
+              <ul className="flex flex-col">
+                <Link href="/2d/retangulo">
+                  <li className="hover:bg-zinc-100 px-4 p-2">Retângulo</li>
+                </Link>
+              </ul>
+              <ul className="flex flex-col">
                 <Link href="/2d/circulo">
                   <li className="hover:bg-zinc-100 px-4 p-2">Círculo</li>
                 </Link>
